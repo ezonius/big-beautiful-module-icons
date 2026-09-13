@@ -97,10 +97,10 @@ end
 
 for prototype_name, inventory_index in pairs {
     ["mining-drill"] = defines.inventory.mining_drill_modules,
-    ["assembling-machine"] = defines.inventory.assembling_machine_modules,
-    ["furnace"] = defines.inventory.furnace_modules,
+    ["assembling-machine"] = defines.inventory.crafter_modules,
+    ["furnace"] = defines.inventory.crafter_modules,
     ["lab"] = defines.inventory.lab_modules,
-    ["rocket-silo"] = defines.inventory.rocket_silo_modules,
+    ["rocket-silo"] = defines.inventory.crafter_modules,
     ["beacon"] = defines.inventory.beacon_modules,
 } do
     for _, machine in pairs(data.raw[prototype_name] or {}) do
