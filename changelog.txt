@@ -1,4 +1,17 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.2.0
+Date: 2026-09-14
+  Changes:
+    - Reworked the module icon grid layout to prefer the widest arrangement that fits inside the machine's bounding box (both width-wise and height-wise) instead of a square-ish grid: an electric mining drill with 20 module slots renders its icons as 10 columns x 2 rows. Counts that don't split evenly into the widest grid keep the widest grid and render a partially filled last row, never a narrower grid chosen just to make rows even. The old 40% area-coverage guard was removed - the bounding-box fit math is now the sole authority on whether a grid fits, so icons never overflow the box in either direction.
+  Bugfixes:
+    - Fixed the icon grid anchor: the engine stacks icon rows downward from the shift point, so the grid is now shifted up by its own rendered height (last row flush with the box bottom), instead of starting at the box bottom and spilling out below it.
+    - Added optional dependency on ConfigurableMiningDrills so its module-slot increases are applied before this mod computes the icon grid layout. Without the load-order guarantee, layouts were computed from the vanilla slot count (e.g. 3 on an electric mining drill) and later slot increases produced overflowing columns (e.g. 3 wide x 7 rows).
+---------------------------------------------------------------------------------------------------
+Version: 1.1.1
+Date: 2026-09-14
+  Bugfixes:
+    - Mining drills now use (nearly) the full machine height for their module icon grid instead of the bottom third reserved for the recipe icon (which drills do not draw), so up to 20 module icons fit inside a 3x3 drill box without overflow.
+---------------------------------------------------------------------------------------------------
 Version: 1.1.0
 Date: 2026-06-26
   Features:
