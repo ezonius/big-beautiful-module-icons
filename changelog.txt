@@ -3,6 +3,7 @@ Version: 1.1.0
 Date: 2026-06-26
   Features:
     - Updated for 2.1
+    - Added startup setting "Maximum rendered module icons" to cap how many module icons are rendered in ALT-mode (default 20, the previous hardcoded max). Set to 0 to disable the cap and render all module icons.
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.3
 Date: 2025-02-25

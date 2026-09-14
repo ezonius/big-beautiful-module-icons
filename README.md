@@ -9,6 +9,10 @@ Design goals:
 - Fix module rendering going outside the bounding box of the machine with 20+ module slots.
 - Supports all mods.
 
+## Settings
+
+**Maximum rendered module icons** (`bbmi-max-rendered-module-icons`) — a startup mod setting, default 20, range 0–20. Because it is read at data stage, changing it requires a full game restart, not just a settings reload. A value of 0 means no cap / feature off — all module icons are rendered as before. Values from 1 to 20 limit how many module icons are drawn per machine (in alt-mode): the capped value is used in place of the machine's real module slot count before the layout math, so the machine renders the layout it would have with that many slots. The cap only engages on machines with more than 20 module slots — something mods such as `more-module-slots` / `configurable-beacons` are needed for.
+
 ## Old
 
 ![](https://assets-mod.factorio.com/assets/c54a89332e53b886be7f9e73ba897d16430cb668.png)

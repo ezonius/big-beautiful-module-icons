@@ -48,6 +48,10 @@ local function scale_module_alt_icons(machine, inventory_index)
     local module_slots = machine.module_slots
     if not module_slots or module_slots == 0 then return end
 
+    local cap = settings.startup["bbmi-max-rendered-module-icons"].value
+    ---@cast cap number
+    if cap > 0 then module_slots = math.min(module_slots, cap) end
+
     local scale_factors = {1}
     for i = 1, 40 do scale_factors[i + 1] = scale_factors[i] * 0.95 end
 
