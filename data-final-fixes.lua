@@ -151,11 +151,53 @@ for prototype_name, inventory_index in pairs {
     end
 end
 
-if data.raw["assembling-machine"]["electromagnetic-plant"] then
-    data.raw["assembling-machine"]["electromagnetic-plant"].icon_draw_specification.scale = 1.8
+-- Active-recipe icon (drawn above the module icons in ALT-mode): its rendered size is
+-- user-configurable via the bbmi-rendered-recipe-icon-scale startup setting (default 1.8,
+-- the previously hardcoded electromagnetic-plant override), and its anchor is moved to the
+-- TOP of the machine's bounding box: the icon's top edge sits flush at the box top (y1) and
+-- the icon extends inward/downward, mirroring the bottom-anchored module grid (which offsets
+-- by y2). The engine centers the icon on the shift point, and the rendered icon height is
+-- one scale tile (one module-icon cell ≈ 1.1 * scale), so the shift is offset half the
+-- rendered height (= scale / 2) below the box top so the top edge lands exactly on y1 and
+-- the icon grows downward inside the box; the shift is clamped so the icon's bottom edge
+-- never passes the box bottom (y2) -- on machines smaller
+-- than the rendered icon at the maximum allowed scale (3), it anchors by the bottom instead.
+-- Applies to every covered type that draws an active-recipe icon
+-- (all except mining-drill), regardless of whether the prototype already had a
+-- spec -- existing fields on the spec table are preserved, only scale/shift are set.
+local recipe_icon_scale = settings.startup["bbmi-rendered-recipe-icon-scale"].value
+---@cast recipe_icon_scale number
+for prototype_name in pairs {
+    ["assembling-machine"] = true,
+    ["furnace"] = true,
+    ["lab"] = true,
+    ["rocket-silo"] = true,
+    ["beacon"] = true,
+} do
+    for _, machine in pairs(data.raw[prototype_name] or {}) do
+        local x1, y1, x2, y2 = collision_box(machine)
+        if x1 then
+            -- Larger machines get proportionally larger recipe icons: linear extrapolation
+            -- from 1.0 at 3x3 (the default setting fits a 3x3 building exactly) and 1.5 at
+            -- 4x4 -> factor(n) = 1 + 0.5 * (n - 3) = 0.5 * n - 0.5 (5x5 -> 2.0, 6x6 -> 2.5...).
+            -- Machines at or below 3x3 keep factor 1. The combined scale is clamped to the
+            -- box dimensions so the icon never exceeds the machine's bounds.
+            local width, height = x2 - x1, y2 - y1
+            local size = math.min(width, height)
+            local factor = size > 3 and 0.5 * size - 0.5 or 1
+            local scale = math.min(recipe_icon_scale * factor, width, height)
+            local spec = machine.icon_draw_specification or {}
+            spec.scale = scale
+            -- shift is the icon's CENTER: lower it by half the rendered height (scale / 2 tiles)
+            -- so the icon's top edge is flush with the box top (y1); clamp so the bottom
+            -- edge never passes the box bottom (y2) when the icon is taller than the box.
+            spec.shift = {x = 0, y = math.min(y1 + scale * 0.5, y2 - scale * 0.5)}
+            machine.icon_draw_specification = spec
+        end
+    end
 end
 
-for _, lab in pairs(data.raw.lab) do
+for _, lab in pairs(data.raw.lab or {}) do
     for _, positioning in pairs(lab.icons_positioning or {}) do
         if positioning.inventory_index == defines.inventory.lab_input then
             local scale = 1
