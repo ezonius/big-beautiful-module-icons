@@ -12,4 +12,5 @@ README.md export-ignore
 .github export-ignore
 .gitignore export-ignore
 .gitattributes export-ignore
-.releaserc export-ignore
+.factorioignore export-ignore
+mod_info.yml export-ignore

@@ -5,3 +5,5 @@
 *.code-workspace
 *.zip
 /.idea
+/.pi/
+/.pi-**/
